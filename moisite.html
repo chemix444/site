@@ -550,7 +550,7 @@
 
   /* ─── INFO STRIP ─── */
   .info-strip { padding: 4rem 3rem; background: var(--ink); border-top: 1px solid rgba(201,147,58,0.1); }
-  .info-inner { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  .info-inner { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
   .info-block { display: flex; gap: 1.2rem; align-items: flex-start; }
   .info-icon { flex-shrink: 0; color: var(--gold); margin-top: 0.1rem; }
   .info-title { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; color: var(--cream); }
@@ -762,6 +762,79 @@
     text-transform: uppercase;
   }
 
+  /* ─── CONTACT MODAL ─── */
+  .contact-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+  }
+  .contact-modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .contact-modal {
+    background: var(--ink);
+    border: 1px solid rgba(201,147,58,0.25);
+    border-radius: 4px;
+    padding: 2.5rem 2rem;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    animation: fadeUp 0.3s ease;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+
+  .contact-modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; cursor: none;
+    color: rgba(247,239,224,0.4); font-size: 1.3rem; line-height: 1;
+    transition: color 0.2s;
+  }
+  .contact-modal-close:hover { color: var(--cream); }
+
+  .contact-modal-icon {
+    width: 52px; height: 52px; background: var(--gold);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.2rem;
+  }
+
+  .contact-modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 400; color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-modal p {
+    font-size: 0.85rem; color: rgba(247,239,224,0.55);
+    line-height: 1.7; margin-bottom: 1.5rem;
+  }
+
+  .contact-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    width: 100%; padding: 1rem 1.5rem;
+    border: 1px solid rgba(201,147,58,0.3);
+    border-radius: 2px; background: transparent;
+    color: var(--cream); font-family: 'Syne', sans-serif;
+    font-size: 0.88rem; font-weight: 600; letter-spacing: 0.04em;
+    text-decoration: none; cursor: none;
+    transition: all 0.3s;
+    margin-bottom: 0.8rem;
+  }
+  .contact-btn:last-child { margin-bottom: 0; }
+  .contact-btn:hover {
+    background: rgba(201,147,58,0.1);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+  .contact-btn svg { flex-shrink: 0; color: var(--gold); }
+
 </style>
 </head>
 <body>
@@ -780,7 +853,7 @@
   <div class="mobile-divider"></div>
   <a href="#events" onclick="closeMobileMenu()">Events</a>
   <div class="mobile-divider"></div>
-  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="javascript:void(0)" onclick="closeMobileMenu();openContactModal()">Contact</a>
 </div>
 
 <!-- NAV -->
@@ -791,7 +864,7 @@
     <li><a href="#categories">Shopping</a></li>
     <li><a href="#dining">Dining</a></li>
     <li><a href="#events">Events</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="openContactModal()">Contact</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" aria-label="Open menu" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -1204,13 +1277,6 @@
       </div>
     </div>
     <div class="info-block reveal reveal-delay-2">
-      <svg class="info-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 11.77a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.79a16 16 0 006.12 6.12l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-      <div>
-        <div class="info-title">Contact</div>
-        <div class="info-text">mallofindia@outlook.com<br>(630) 528-0000</div>
-      </div>
-    </div>
-    <div class="info-block reveal reveal-delay-3">
       <svg class="info-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       <div>
         <div class="info-title">Leasing</div>
@@ -1381,6 +1447,20 @@
     if (e.target === document.getElementById('waModal')) closeWhatsAppModal();
   }
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeWhatsAppModal(); });
+
+  // Contact modal
+  function openContactModal() {
+    document.getElementById('contactModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeContactModal() {
+    document.getElementById('contactModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeContactModalOnBackdrop(e) {
+    if (e.target === document.getElementById('contactModal')) closeContactModal();
+  }
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeContactModal(); });
 </script>
 <!-- WHATSAPP MODAL -->
 <div class="wa-modal-overlay" id="waModal" onclick="closeWaModalOnBackdrop(event)">
@@ -1397,6 +1477,26 @@
       alt="WhatsApp Group QR Code"
     />
     <div class="wa-scan-hint">Point your camera at the code to join</div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="contact-modal-overlay" id="contactModal" onclick="closeContactModalOnBackdrop(event)">
+  <div class="contact-modal">
+    <button class="contact-modal-close" onclick="closeContactModal()" aria-label="Close">✕</button>
+    <div class="contact-modal-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 11.77a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.79a16 16 0 006.12 6.12l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    </div>
+    <h3>Contact Us</h3>
+    <p>Reach out to Mall of India — tap below to send us an email or give us a call.</p>
+    <a href="mailto:mallofindia@outlook.com" class="contact-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
+      mallofindia@outlook.com
+    </a>
+    <a href="tel:+16305280000" class="contact-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 11.77a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.79a16 16 0 006.12 6.12l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      (630) 528-0000
+    </a>
   </div>
 </div>
 </body>
